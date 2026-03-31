@@ -10,6 +10,7 @@ DATA_DIR = PROJECT_ROOT / "data"
 RAW_DIR = DATA_DIR / "raw"
 PROCESSED_DIR = DATA_DIR / "processed"
 MODELS_DIR = PROJECT_ROOT / "models"
+OUTPUTS_DIR = PROJECT_ROOT / "outputs"
 
 # AWS
 AWS_REGION = os.getenv("AWS_REGION", "us-east-1")
@@ -26,5 +27,5 @@ TEST_SIZE = 0.2
 TARGET_COL = "Is Laundering"
 
 # Ensure dirs exist
-for d in [DATA_DIR, RAW_DIR, PROCESSED_DIR, MODELS_DIR]:
+for d in [DATA_DIR, RAW_DIR, PROCESSED_DIR, MODELS_DIR, OUTPUTS_DIR]:
     d.mkdir(parents=True, exist_ok=True)
