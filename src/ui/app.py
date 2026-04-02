@@ -108,7 +108,7 @@ def analyze_single(
     return verdict, result["risk_summary"], sar
 
 
-with gr.Blocks(title="AML Transaction Analyzer", theme=gr.themes.Soft()) as app:
+with gr.Blocks() as app:
     gr.Markdown("# AML Transaction Analyzer")
     gr.Markdown(
         "Upload bank transactions or enter a single transaction "
@@ -186,7 +186,12 @@ with gr.Blocks(title="AML Transaction Analyzer", theme=gr.themes.Soft()) as app:
 
 
 def main():
-    app.launch(server_name="0.0.0.0", server_port=8080)
+    app.launch(
+        server_name="0.0.0.0",
+        server_port=8080,
+        title="AML Transaction Analyzer",
+        theme=gr.themes.Soft(),
+    )
 
 
 if __name__ == "__main__":
