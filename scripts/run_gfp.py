@@ -92,8 +92,8 @@ def run_gfp(edge_list):
         "time_window": 16,
         "fan": True, "fan_tw": 16, "fan_bins": [2, 3],
         "degree": True, "degree_tw": 16, "degree_bins": [2, 3],
-        "scatter-gather": True, "scatter-gather_tw": 16, "scatter-gather_bins": [2, 3],
-        "temp-cycle": True, "temp-cycle_tw": 16, "temp-cycle_bins": [2, 3],
+        "scatter-gather": False, "scatter-gather_tw": 16, "scatter-gather_bins": [2, 3],
+        "temp-cycle": False, "temp-cycle_tw": 16, "temp-cycle_bins": [2, 3],
         "vertex_stats": True, "vertex_stats_cols": [3], "vertex_stats_feats": [0, 1, 2, 3, 4, 8, 9, 10],
         "lc-cycle": False,
     })
