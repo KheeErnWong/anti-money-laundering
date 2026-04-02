@@ -45,16 +45,8 @@ def load_and_prepare():
     df = pd.read_csv(RAW_DIR / DATASET_NAME)
     print(f"Raw shape: {df.shape}, Illicit: {df[TARGET_COL].sum()}")
 
-    # Subsample if enabled
-    if ENABLE_SUBSAMPLE and len(df) > SAMPLE_SIZE:
-        print(f"Subsampling to {SAMPLE_SIZE}...")
-        pos = df[df[TARGET_COL] == 1]
-        neg = df[df[TARGET_COL] == 0]
-        n_neg = min(SAMPLE_SIZE - len(pos), len(neg))
-        neg_sample = neg.sample(n=n_neg, random_state=RANDOM_STATE)
-        df = pd.concat([pos, neg_sample], ignore_index=True)
-        df = df.sample(frac=1, random_state=RANDOM_STATE).reset_index(drop=True)
-        print(f"Subsampled: {df.shape}, Illicit: {df[TARGET_COL].sum()}")
+    # NOTE: Do NOT subsample here. GFP must see the full graph.
+    # Subsampling happens AFTER GFP enrichment in main().
 
     # Convert string account IDs to numeric
     print("Mapping account IDs to numeric...")
@@ -211,12 +203,38 @@ def train_and_evaluate(df):
     print(f"Saved feature names to {MODELS_DIR / 'feature_names_gfp.json'}")
 
 
+def subsample_features(df):
+    """Subsample the enriched feature matrix for training.
+
+    GFP runs on the full dataset for complete graph features.
+    Subsampling happens here to keep training manageable.
+
+    Args:
+        df: Full enriched feature DataFrame with target column.
+
+    Returns:
+        Subsampled DataFrame.
+    """
+    if not ENABLE_SUBSAMPLE or len(df) <= SAMPLE_SIZE:
+        return df
+
+    print(f"Subsampling enriched data to {SAMPLE_SIZE}...")
+    pos = df[df[TARGET_COL] == 1]
+    neg = df[df[TARGET_COL] == 0]
+    n_neg = min(SAMPLE_SIZE - len(pos), len(neg))
+    neg_sample = neg.sample(n=n_neg, random_state=RANDOM_STATE)
+    result = pd.concat([pos, neg_sample], ignore_index=True)
+    result = result.sample(frac=1, random_state=RANDOM_STATE).reset_index(drop=True)
+    print(f"Subsampled: {result.shape}, Illicit: {result[TARGET_COL].sum()}")
+    return result
+
+
 def main():
     df, edge_list, labels, account_map = load_and_prepare()
     enriched = run_gfp(edge_list)
     feature_df = build_feature_matrix(df, enriched)
 
-    # Save enriched dataset
+    # Save full enriched dataset
     out_path = PROCESSED_DIR / "processed_gfp.parquet"
     feature_df.to_parquet(out_path, index=False)
     print(f"Saved enriched dataset to {out_path}")
@@ -225,6 +243,9 @@ def main():
     with open(MODELS_DIR / "account_map.json", "w") as f:
         json.dump(account_map, f)
     print(f"Saved account mapping to {MODELS_DIR / 'account_map.json'}")
+
+    # Subsample AFTER GFP enrichment for training
+    feature_df = subsample_features(feature_df)
 
     train_and_evaluate(feature_df)
     print("\nDone. Compare these results against baseline in outputs/baseline/")
