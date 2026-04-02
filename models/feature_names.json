@@ -1,0 +1,1 @@
+["fan_out", "fan_in", "sender_txn_count", "receiver_txn_count", "log_amount_paid", "same_currency", "same_bank", "self_transfer", "pf_ACH", "pf_Bitcoin", "pf_Cash", "pf_Cheque", "pf_Credit Card", "pf_Reinvestment", "pf_Wire"]

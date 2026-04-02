@@ -27,6 +27,9 @@ RANDOM_STATE = 42
 TEST_SIZE = 0.2
 TARGET_COL = "Is Laundering"
 
+# Inference
+SCORE_THRESHOLD = 0.15  # flag transactions above this probability
+
 # Ensure dirs exist
 for d in [DATA_DIR, RAW_DIR, PROCESSED_DIR, MODELS_DIR, OUTPUTS_DIR]:
     d.mkdir(parents=True, exist_ok=True)

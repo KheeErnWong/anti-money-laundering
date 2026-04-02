@@ -1,0 +1,9 @@
+{
+  "selected_model": "random_forest",
+  "f1_minority": 0.24562841530054644,
+  "pr_auc": 0.4925327957261398,
+  "mcc": 0.3395251564795255,
+  "precision": 0.14303898170246618,
+  "recall": 0.8685990338164251,
+  "justification": "Selected random_forest with minority-class F1 of 0.2456 and PR-AUC of 0.4925. Precision: 0.1430, Recall: 0.8686, MCC: 0.3395."
+}

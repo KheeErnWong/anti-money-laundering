@@ -4,7 +4,7 @@ import json
 
 import pandas as pd
 
-from src.config import MODELS_DIR
+from src.config import MODELS_DIR, SCORE_THRESHOLD
 from src.data.preprocess import engineer_features
 from src.models.train import load_model
 from src.pipeline.state import AMLState
@@ -55,21 +55,21 @@ def scorer_node(state: AMLState) -> dict:
             df_features[col] = 0
     df_features = df_features[feature_names]
 
-    # Predict
-    predictions = model.predict(df_features)
+    # Predict using configurable threshold instead of default 0.5
     probabilities = model.predict_proba(df_features)[:, 1]
 
     scores = []
     flagged = []
-    for i, (pred, prob) in enumerate(zip(predictions, probabilities)):
+    for i, prob in enumerate(probabilities):
+        is_flagged = prob >= SCORE_THRESHOLD
         record = {
             "index": i,
             "score": round(float(prob), 4),
-            "prediction": int(pred),
+            "prediction": int(is_flagged),
         }
         scores.append(record)
 
-        if pred == 1:
+        if is_flagged:
             txn = state["transactions"][i].copy()
             txn["risk_score"] = round(float(prob), 4)
             flagged.append(txn)
