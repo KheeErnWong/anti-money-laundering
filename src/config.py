@@ -21,6 +21,7 @@ BEDROCK_MODEL_ID = os.getenv(
 
 # Dataset
 DATASET_NAME = "HI-Small_Trans.csv"
+ENABLE_SUBSAMPLE = True
 SAMPLE_SIZE = 500_000
 RANDOM_STATE = 42
 TEST_SIZE = 0.2
